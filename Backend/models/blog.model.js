@@ -1,21 +1,31 @@
-import mongoose from 'mongoose';
-const {Schema} = mongoose;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 const blogSchema = new Schema({
-    title:{
-    type: String,
-    max: 200,
-    required: true
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
     },
-    content:{
+    title: {
+        type: String,
+        max: 200,
+        required: true,
+    },
+    content: {
         type: String,
         max: 5000,
-        required: true
+        required: true,
     },
-    media:{
-        type: String
-    }
-})
+    media: {
+        type: String,
+    },
+    series: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "series",
+        required: false,
+    },
+});
 
-const blog = mongoose.model('blog', blogSchema)
+const blog = mongoose.model("blog", blogSchema);
 export default blog;
