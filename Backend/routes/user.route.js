@@ -5,6 +5,6 @@ import {
     logoutMethod,
 } from "../controllers/user.controller.js";
 
-Router.route("/login", loginMethod);
+Router.route("/login").post(loginMethod);
 Router.route("/signup", signupMethod);
 Router.route("/logout", logoutMethod);
