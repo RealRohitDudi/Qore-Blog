@@ -6,9 +6,10 @@ import dotenv from "dotenv";
 import userRouter from "./routes/user.route.js";
 
 dotenv.config();
-
 const app = express();
+
 app.use(cors());
+app.use(express.json());
 
 app.listen(process.env.BACKEND_SERVER_PORT, async () => {
     console.log(`App is listening on port ${process.env.BACKEND_SERVER_PORT} `);

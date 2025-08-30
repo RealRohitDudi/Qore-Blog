@@ -5,6 +5,13 @@ import {
     logoutMethod,
 } from "../controllers/user.controller.js";
 
-Router.route("/login").post(loginMethod);
-Router.route("/signup", signupMethod);
-Router.route("/logout", logoutMethod);
+const router = Router();
+
+router.post("/login", (req, res) => {
+    loginMethod(req, res);
+});
+//same working, express automatically send (req,res,next) under the hood
+router.post("/signup", signupMethod);
+router.post("/logout", logoutMethod);
+
+export default router;

@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 import bcrypt from "bcryptjs";
 
 const userSchema = new Schema({
-    name: {
+    fullName: {
         type: String,
         required: true,
         max: 100,
@@ -49,11 +49,16 @@ const userSchema = new Schema({
 const salt = bcrypt.genSaltSync(10);
 const hash = bcrypt.hashSync("B4c0//", salt);
 
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
-    const salt = await bcrypt.genSalt(11);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
+
+    try {
+        const salt = await bcrypt.genSalt(11);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(err);
+    }
 });
 
 userSchema.methods.isPasswordCorrect = async (password) => {
