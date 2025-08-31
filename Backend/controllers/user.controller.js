@@ -1,6 +1,5 @@
 import user from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-import cookieParser from "cookie-parser";
 
 const loginMethod = async (req, res) => {
     if (!req.body) throw new error("Body is not available in request!");
@@ -14,7 +13,7 @@ const loginMethod = async (req, res) => {
         $or: [{ username: username }, { email: email }],
     });
     if (!userExistence) {
-        throw new error(
+        return res.status()(
             "This user does not exist. please create your account or try with correct credentials."
         );
     }
@@ -24,7 +23,8 @@ const loginMethod = async (req, res) => {
     if (isCorrect) {
         const refreshToken = await userExistence.generateRefreshToken();
 
-        console.log("userExistence._id: ", userExistence._id);
+        userExistence.refreshToken = refreshToken;
+        await userExistence.save();
 
         const accessToken = await userExistence.generateAccessToken();
         return res
@@ -32,11 +32,6 @@ const loginMethod = async (req, res) => {
             .cookie("access_token", accessToken, {
                 httpOnly: true,
                 secure: true, // set false on localhost
-                sameSite: "strict",
-            })
-            .cookie("refresh_token", refreshToken, {
-                httpOnly: true,
-                secure: true,
                 sameSite: "strict",
             })
             .json({
@@ -49,7 +44,7 @@ const loginMethod = async (req, res) => {
                 },
             });
     } else {
-        return res.status(300).json({ message: "This password is incorrect" });
+        return res.status(401).json({ message: "This password is incorrect" });
     }
 };
 const signupMethod = async (req, res) => {

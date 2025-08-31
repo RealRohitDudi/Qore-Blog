@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const userSchema = new Schema({
     fullName: {
@@ -57,15 +58,16 @@ userSchema.pre("save", async function (next) {
         this.password = await bcrypt.hash(this.password, salt);
         next();
     } catch (error) {
-        next(err);
+        next(error);
     }
 });
 
-userSchema.methods.isPasswordCorrect = async (password) => {
+//arrow function does not bind 'this' current context reference keyword
+userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = async () => {
+userSchema.methods.generateAccessToken = async function () {
     return jwt.sign(
         {
             id: this._id,
@@ -76,7 +78,8 @@ userSchema.methods.generateAccessToken = async () => {
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
     );
 };
-userSchema.methods.generateRefreshToken = async () => {
+
+userSchema.methods.generateRefreshToken = async function () {
     return jwt.sign(
         {
             id: this._id,
