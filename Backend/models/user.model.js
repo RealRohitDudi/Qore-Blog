@@ -38,7 +38,7 @@ const userSchema = new Schema({
         type: String,
     },
     twoFactorAuth: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "",
     },
     refreshToken: {
