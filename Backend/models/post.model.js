@@ -12,10 +12,27 @@ const postSchema = new Schema({
         max: 200,
         required: true,
     },
+
+    description: {
+        type: String,
+        max: 5000,
+    },
+    location: {
+        type: String,
+        max: 200,
+    },
+    musicId: {
+        type: String,
+        max: 200,
+    },
     content: {
         type: String,
         max: 5000,
         required: true,
+    },
+    tags: {
+        type: String,
+        max: 500,
     },
     reposts: {
         type: Schema.Types.ObjectId,
@@ -34,11 +51,15 @@ const postSchema = new Schema({
     },
     media: {
         type: String,
+        max: 200,
     },
     series: {
         type: Schema.Types.ObjectId,
         ref: "series",
-        required: false,
+    },
+    altText: {
+        type: String,
+        max: 100,
     },
 });
 

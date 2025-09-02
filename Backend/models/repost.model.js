@@ -6,7 +6,11 @@ const repostSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "user",
     },
-    post: {
+    onPost: {
+        type: Schema.Types.ObjectId,
+        ref: "post",
+    },
+    onRepost: {
         type: Schema.Types.ObjectId,
         ref: "post",
     },

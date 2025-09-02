@@ -6,9 +6,17 @@ const commentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "user",
     },
-    post: {
+    onPost: {
         type: Schema.Types.ObjectId,
         ref: "post",
+    },
+    onSeries: {
+        type: Schema.Types.ObjectId,
+        ref: "comment",
+    },
+    onRepost: {
+        type: Schema.Types.ObjectId,
+        ref: "comment",
     },
 });
 

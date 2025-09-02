@@ -5,7 +5,7 @@ const seariesSchema = new Schema({
         type: String,
         max: 100,
     },
-    blogs: [
+    posts: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "blog",
