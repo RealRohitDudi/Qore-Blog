@@ -1,17 +1,20 @@
 import mongoose, { mongo } from "mongoose";
 const { Schema } = mongoose;
-const seariesSchema = new Schema({
-    name: {
-        type: String,
-        max: 100,
-    },
-    posts: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "blog",
+const seariesSchema = new Schema(
+    {
+        name: {
+            type: String,
+            max: 100,
         },
-    ],
-});
+        posts: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "blog",
+            },
+        ],
+    },
+    { timestamps: true }
+);
 
 const series = mongoose.model("series", seariesSchema);
 

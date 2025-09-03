@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.route.js";
 import postRouter from "./routes/post.route.js";
+import bodyParser from "body-parser";
 
 dotenv.config();
 const app = express();
@@ -12,6 +13,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 
 app.listen(process.env.BACKEND_SERVER_PORT, async () => {
     console.log(`App is listening on port ${process.env.BACKEND_SERVER_PORT} `);

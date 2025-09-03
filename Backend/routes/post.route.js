@@ -14,8 +14,8 @@ import {
 const router = Router();
 
 router.post("/create", currentUser, createPost);
-router.get("/get", getPost);
-router.put("/update", isPostAuthorized, updatePost);
+router.get("/get-post/:postId", getPost);
+router.patch("/update/:postId", isPostAuthorized, updatePost);
 router.delete("/delete", isPostAuthorized, deletePost);
 
 export default router;

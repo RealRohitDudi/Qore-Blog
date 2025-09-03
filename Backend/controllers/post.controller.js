@@ -2,6 +2,7 @@ import post from "../models/post.model.js";
 import like from "../models/like.model.js";
 import repost from "../models/repost.model.js";
 import comment from "../models/comment.model.js";
+import mongoose from "mongoose";
 
 const createPost = async (req, res) => {
     if (!req.user) {
@@ -20,7 +21,6 @@ const createPost = async (req, res) => {
     }
 
     const {
-        author = null,
         title = null,
         description = null,
         location = null,
@@ -40,11 +40,111 @@ const createPost = async (req, res) => {
         });
     }
 
-    console.log("req.user._id is: ", req.user._id);
+    const postInstance = await post.create({
+        author: req.user._id,
+        title: title,
+        content: content,
+        description: description ? description : null,
+        location: location ? location : null,
+        musicId: musicId ? musicId : null,
+        tags: tags ? tags : null,
+        media: media ? media : null,
+        series: series ? series : null,
+        altText: altText ? altText : null,
+    });
 
-    const postInstance = post.create({ author: req.user._id, title: title });
+    if (!postInstance) {
+        return res.status(300).json({
+            success: false,
+            message:
+                "an unexpected Error occured while creating post. please try again.",
+        });
+    } else {
+        return res.status(200).json({
+            success: true,
+            message: "Post created successfully.",
+            postId: postInstance._id,
+        });
+    }
 };
 
-const getPost = async (req, res) => {};
-const updatePost = async (req, res) => {};
+const getPost = async (req, res) => {
+    console.log("getPost method invoked!");
+
+    if (!req.params) {
+        return res.status(404).json({
+            success: "false",
+            message: "Could you tell us which post do you want to get?",
+        });
+    }
+    const { postId } = req.params;
+
+    const postInstance = await post.findById(postId);
+
+    return res.status(200).json({
+        success: true,
+        message: "Got it!",
+        post: { title: { postInstance } },
+    });
+};
+
+const updatePost = async (req, res) => {
+    if (!req.body) {
+        return res.status(300).json({
+            success: false,
+            message: "req.body not found",
+        });
+    }
+    if (!req.params) {
+        return res.status(404).json({
+            success: false,
+            message: "Could you tell us which post do you want to edit?",
+        });
+    }
+    const {
+        title = null,
+        description = null,
+        location = null,
+        musicId = null,
+        content = null,
+        tags = null,
+        media = null,
+        series = null,
+        altText = null,
+    } = req.body;
+
+    const { postId } = req.params;
+
+    const updatedPost = await findByIdAndUpdate(
+        { postId },
+        {
+            $set: {
+                title: title ? title : null,
+                description: description ? description : null,
+                location: location ? location : null,
+                musicId: musicId ? musicId : null,
+                content: content ? content : null,
+                tags: tags ? tags : null,
+                media: media ? media : null,
+                series: series ? series : null,
+                altText: altText ? altText : null,
+            },
+        }
+    );
+    if (!updatedPost) {
+        return res.status(303).json({
+            success: false,
+            message:
+                "Unexpected error occured while creating post. pleaase try again.",
+        });
+    } else {
+        return res.status(200).json({
+            success: true,
+            message: "Post updated successfully!",
+            post: { updatedPost },
+        });
+    }
+};
 const deletePost = async (req, res) => {};
+
+export { createPost, getPost, updatePost, deletePost };

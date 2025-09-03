@@ -3,49 +3,52 @@ const { Schema } = mongoose;
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const userSchema = new Schema({
-    fullName: {
-        type: String,
-        required: true,
-        max: 100,
+const userSchema = new Schema(
+    {
+        fullName: {
+            type: String,
+            required: true,
+            max: 100,
+        },
+        username: {
+            type: String,
+            required: true,
+            unique: true,
+            max: 50,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        age: {
+            type: Number,
+            min: 1,
+            max: 100,
+        },
+        totalPosts: { type: Number, default: 0 },
+        address: {
+            type: String,
+            max: 300,
+        },
+        bio: {
+            type: String,
+            max: 300,
+        },
+        password: {
+            type: String,
+        },
+        twoFactorAuth: {
+            type: Schema.Types.ObjectId,
+            ref: "",
+        },
+        refreshToken: {
+            type: String,
+            default: null,
+        },
     },
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        max: 50,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    age: {
-        type: Number,
-        min: 1,
-        max: 100,
-    },
-    totalPosts: { type: Number, default: 0 },
-    address: {
-        type: String,
-        max: 300,
-    },
-    bio: {
-        type: String,
-        max: 300,
-    },
-    password: {
-        type: String,
-    },
-    twoFactorAuth: {
-        type: Schema.Types.ObjectId,
-        ref: "",
-    },
-    refreshToken: {
-        type: String,
-        default: null,
-    },
-});
+    { timestamps: true }
+);
 
 const salt = bcrypt.genSaltSync(10);
 const hash = bcrypt.hashSync("B4c0//", salt);

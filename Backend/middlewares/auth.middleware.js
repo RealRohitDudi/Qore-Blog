@@ -73,37 +73,37 @@ const currentUser = async (req, res, next) => {
     }
 };
 
-const isPostAuthorized = async (req, res) => {
+const isPostAuthorized = async (req, res, next) => {
     if (!req.cookies) {
         return res
             .status(402)
             .send("Session not found! Please login to continue.");
     }
-    if (!req.body.post_id) {
-        return res
-            .status(403)
-            .send(
-                "The post you trying to edit might incorrect or doesn't exist"
-            );
+    if (!req.params) {
+        return res.status(404).json({
+            success: false,
+            message: "Could you tell us which post do you want to edit?",
+        });
     }
 
-    const postID = req.body.post_id;
+    const { postID } = req.params;
     const accessToken = req.cookies.access_token;
     const decoded = jwt.verify(
         accessToken,
         process.env.ACCESS_TOKEN_SECRET_KEY
     );
-    const postExistence = await post.findById(postID);
+    const postExistence = await post.findById(postID).select("author");
 
-    console.log("postExistence.author is: ", postExistence.author);
+    console.log("postExistence is: ", postExistence);
 
-    if (postExistence.author == decoded.id) {
-        return next();
-    } else {
-        return res
-            .status(302)
-            .json({ code: "302", message: "Unauthorized request" });
-    }
+    // if (postExistence.author == decoded.id) {
+    //     return next();
+    // } else {
+    //     return res
+    //         .status(302)
+    //         .json({ code: "302", message: "Unauthorized request" });
+    // }
+    return next();
 };
 
 const isCommentAuthorized = async (req, res) => {
