@@ -39,14 +39,10 @@ const postSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "repost",
         },
-        likes: {
-            type: Schema.Types.ObjectId,
-            ref: "like",
-        },
-        comments: {
-            type: Schema.Types.ObjectId,
-            ref: "comment",
-        },
+        likeCount: { type: Number, default: 0 },
+
+        commentCount: { type: Number, default: 0 },
+
         shares: {
             type: Number,
         },
@@ -57,6 +53,20 @@ const postSchema = new Schema(
         series: {
             type: Schema.Types.ObjectId,
             ref: "series",
+        },
+        isRepost: {
+            type: Boolean,
+            required: true,
+        },
+        repostOf: {
+            type: Schema.Types.ObjectId,
+            ref: "post",
+            default: null,
+        },
+        visibility: {
+            type: String,
+            enum: ["public", "private", "unlisted", "draft"],
+            default: "public",
         },
         altText: {
             type: String,

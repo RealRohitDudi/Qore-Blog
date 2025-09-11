@@ -51,6 +51,7 @@ const createPost = async (req, res) => {
         media: media ? media : null,
         series: series ? series : null,
         altText: altText ? altText : null,
+        isRepost: false,
     });
 
     if (!postInstance) {

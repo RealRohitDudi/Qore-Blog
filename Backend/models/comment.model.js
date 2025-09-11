@@ -2,22 +2,14 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const commentSchema = new Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: "user",
+    user: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    targetId: { type: Schema.Types.ObjectId, required: true },
+    targetType: {
+        type: String,
+        enum: ["post", "comment", "repost", "series"],
+        required: true,
     },
-    onPost: {
-        type: Schema.Types.ObjectId,
-        ref: "post",
-    },
-    onSeries: {
-        type: Schema.Types.ObjectId,
-        ref: "comment",
-    },
-    onRepost: {
-        type: Schema.Types.ObjectId,
-        ref: "comment",
-    },
+    createdAt: { type: Date, default: Date.now },
 });
 
 const comment = mongoose.model("comment", commentSchema);

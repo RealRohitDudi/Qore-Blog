@@ -38,6 +38,13 @@ const userSchema = new Schema(
         password: {
             type: String,
         },
+        visibility: {
+            type: String,
+            enum: ["public", "private", "unlisted"],
+            default: "public",
+        },
+        isDeleted: { type: Boolean, default: false },
+        isVerified: { type: Boolean, default: false },
         twoFactorAuth: {
             type: Schema.Types.ObjectId,
             ref: "",

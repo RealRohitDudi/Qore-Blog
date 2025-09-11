@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.route.js";
 import postRouter from "./routes/post.route.js";
+import commentRouter from "./routes/comment.route.js";
 import bodyParser from "body-parser";
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.listen(process.env.BACKEND_SERVER_PORT, async () => {
 
 app.use("/user", userRouter);
 app.use("/post", postRouter);
+app.use("/comment", commentRouter);
 
 app.get("/", (req, res) => {
     res.send("Qore is listening");
