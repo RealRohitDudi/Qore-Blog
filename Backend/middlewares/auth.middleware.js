@@ -86,24 +86,28 @@ const isPostAuthorized = async (req, res, next) => {
         });
     }
 
-    const { postID } = req.params;
+    const { postId } = req.params;
     const accessToken = req.cookies.access_token;
+    if (!accessToken) {
+        return res
+            .status(402)
+            .send("AccessToken not found! Please login to continue.");
+    }
     const decoded = jwt.verify(
         accessToken,
         process.env.ACCESS_TOKEN_SECRET_KEY
     );
-    const postExistence = await post.findById(postID).select("author");
+    const postExistence = await post.findById(postId);
 
     console.log("postExistence is: ", postExistence);
 
-    // if (postExistence.author == decoded.id) {
-    //     return next();
-    // } else {
-    //     return res
-    //         .status(302)
-    //         .json({ code: "302", message: "Unauthorized request" });
-    // }
-    return next();
+    if (postExistence.author == decoded.id) {
+        return next();
+    } else {
+        return res
+            .status(302)
+            .json({ code: "302", message: "Unauthorized request" });
+    }
 };
 
 const isCommentAuthorized = async (req, res) => {

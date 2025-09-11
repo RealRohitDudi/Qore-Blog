@@ -88,6 +88,7 @@ const getPost = async (req, res) => {
     });
 };
 
+//verified
 const updatePost = async (req, res) => {
     if (!req.body) {
         return res.status(300).json({
@@ -115,22 +116,21 @@ const updatePost = async (req, res) => {
 
     const { postId } = req.params;
 
-    const updatedPost = await findByIdAndUpdate(
-        { postId },
-        {
-            $set: {
-                title: title ? title : null,
-                description: description ? description : null,
-                location: location ? location : null,
-                musicId: musicId ? musicId : null,
-                content: content ? content : null,
-                tags: tags ? tags : null,
-                media: media ? media : null,
-                series: series ? series : null,
-                altText: altText ? altText : null,
-            },
-        }
-    );
+    const updateFields = {};
+    if (title !== undefined) updateFields.title = title;
+    if (description !== undefined) updateFields.description = description;
+    if (location !== undefined) updateFields.location = location;
+    if (musicId !== undefined) updateFields.musicId = musicId;
+    if (content !== undefined) updateFields.content = content;
+    if (tags !== undefined) updateFields.tags = tags;
+    if (media !== undefined) updateFields.media = media;
+    if (series !== undefined) updateFields.series = series;
+    if (altText !== undefined) updateFields.altText = altText;
+
+    const updatedPost = await post.findByIdAndUpdate(postId, {
+        $set: updateFields,
+    });
+
     if (!updatedPost) {
         return res.status(303).json({
             success: false,
@@ -145,6 +145,27 @@ const updatePost = async (req, res) => {
         });
     }
 };
-const deletePost = async (req, res) => {};
+const deletePost = async (req, res) => {
+    if (!req.params) {
+        return res.status(404).json({
+            success: false,
+            message: "Could you tell us which post do you want to edit?",
+        });
+    }
+    const { postId } = req.params;
+
+    const deletedPost = await post.findByIdAndDelete(postId);
+    if (!deletedPost) {
+        return res.status(300).json({
+            success: false,
+            message: "Error occured while deleting post.",
+        });
+    } else {
+        return res.status(200).json({
+            success: true,
+            message: "Post deleted successfully!",
+        });
+    }
+};
 
 export { createPost, getPost, updatePost, deletePost };
