@@ -62,11 +62,8 @@ const currentUser = async (req, res, next) => {
 
     const userExistence = await user.findById(decoded.id);
     if (!userExistence) {
-        return res.status(404).json({
-            success: "false",
-            message:
-                "Bad request! User not found with this invalid or expired token.",
-        });
+        req.user = null;
+        return next();
     } else {
         req.user = userExistence;
         return next();
@@ -111,6 +108,38 @@ const isPostAuthorized = async (req, res, next) => {
 };
 
 const isCommentAuthorized = async (req, res) => {
+    if (!req.cookies) {
+        return res
+            .status(402)
+            .send("Session not found! Please login to continue.");
+    }
+    if (!req.body.comment_id) {
+        return res
+            .status(403)
+            .send(
+                "The post you trying to edit might incorrect or doesn't exist"
+            );
+    }
+
+    const commentID = req.body.comment_id;
+    const accessToken = req.cookies.access_token;
+    const decoded = jwt.verify(
+        accessToken,
+        process.env.ACCESS_TOKEN_SECRET_KEY
+    );
+    const commentExistence = await comment.findById(commentID);
+
+    console.log("commentExistence.author is: ", commentExistence.user);
+
+    if (commentExistence.user == decoded.id) {
+        return next();
+    } else {
+        return res
+            .status(302)
+            .json({ code: "302", message: "Unauthorized request" });
+    }
+};
+const isLikeAuthorized = async (req, res) => {
     if (!req.cookies) {
         return res
             .status(402)

@@ -11,7 +11,9 @@ const postSchema = new Schema(
         title: {
             type: String,
             max: 200,
-            required: true,
+            required: function () {
+                return !this.isRepost;
+            },
         },
 
         description: {
@@ -29,15 +31,17 @@ const postSchema = new Schema(
         content: {
             type: String,
             max: 5000,
-            required: true,
+            required: function () {
+                return !this.isRepost;
+            },
         },
         tags: {
             type: String,
             max: 500,
         },
-        reposts: {
-            type: Schema.Types.ObjectId,
-            ref: "repost",
+        repostCount: {
+            type: Number,
+            default: 0,
         },
         likeCount: { type: Number, default: 0 },
 
@@ -61,7 +65,13 @@ const postSchema = new Schema(
         repostOf: {
             type: Schema.Types.ObjectId,
             ref: "post",
-            default: null,
+            required: function () {
+                return this.isRepost;
+            },
+        },
+        parentRepost: {
+            type: Schema.Types.ObjectId,
+            ref: "post",
         },
         visibility: {
             type: String,

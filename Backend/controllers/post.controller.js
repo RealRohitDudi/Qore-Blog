@@ -82,11 +82,24 @@ const getPost = async (req, res) => {
 
     const postInstance = await post.findById(postId);
 
-    return res.status(200).json({
-        success: true,
-        message: "Got it!",
-        post: { title: { postInstance } },
-    });
+    if (!req.user) {
+        return res.status(200).json({
+            success: true,
+            message: "Got it!",
+            post: { postInstance },
+        });
+    } else {
+        const isLiked = await like.findOne({
+            targetType: "post",
+            user: req.user._id,
+        });
+        return res.status(200).json({
+            success: true,
+            message: "Got it!",
+            post: { postInstance },
+            isLiked: isLiked,
+        });
+    }
 };
 
 //verified
@@ -169,4 +182,67 @@ const deletePost = async (req, res) => {
     }
 };
 
-export { createPost, getPost, updatePost, deletePost };
+const likePost = async (req, res) => {
+    if (!req.params) {
+        return res.status(404).json({
+            success: false,
+            message: "Can you tell us which post do you want to like?",
+        });
+    }
+    const { postId } = req.params;
+
+    if (!req.user) {
+        return res.status(404).json({
+            success: false,
+            message: "Login is required in order to like a post.",
+        });
+    }
+    const likeInstance = await like.findOneAndDelete({
+        targetId: postId,
+        user: req.user._id,
+    });
+
+    console.log("likeInstance is:", likeInstance);
+
+    if (!likeInstance) {
+        const createdLike = await like.create({
+            targetId: postId,
+            user: req.user._id,
+            targetType: "post",
+        });
+        const updatedPost = await post.findByIdAndUpdate(
+            postId,
+            { $inc: { likeCount: 1 } },
+            { new: true }
+        );
+
+        if (!createdLike) {
+            return res.status(300).json({
+                success: false,
+                message:
+                    "Unexpected error occured while creating like for given post",
+            });
+        } else {
+            return res.status(200).json({
+                success: true,
+                message: "Post liked successfully.",
+                totalPostLikes: updatedPost.likeCount,
+            });
+        }
+    } else {
+        const updatedPost = await post.findByIdAndUpdate(
+            postId,
+            { $inc: { likeCount: -1 } },
+            { new: true }
+        );
+        return res.status(200).json({
+            success: true,
+            message: "post unliked successfully.",
+            totalPostLikes: updatedPost.likeCount,
+        });
+    }
+};
+
+const createRepost = async (req, res) => {};
+
+export { createPost, getPost, updatePost, deletePost, likePost };
