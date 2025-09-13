@@ -168,6 +168,17 @@ const deletePost = async (req, res) => {
     }
     const { postId } = req.params;
 
+    //update repost count on orginal post if it is a repost
+    const postCheck = await post.findById(postId).select("isRequote requoteOf");
+
+    if (postCheck.isRequote) {
+        const updatedPost = await post.findByIdAndUpdate(
+            postCheck.requoteOf,
+            { $inc: { repostCount: -1 } },
+            { new: true }
+        );
+    }
+
     const deletedPost = await post.findByIdAndDelete(postId);
     if (!deletedPost) {
         return res.status(300).json({
@@ -258,6 +269,7 @@ const createRepost = async (req, res) => {
             message: "Login is required in order to repost a post.",
         });
     }
+    console.log("createRepost invoked!");
 
     const givenPost = await post.findById(postId).select("isRepost");
 
@@ -277,7 +289,7 @@ const createRepost = async (req, res) => {
     if (!repostInstance) {
         const createdRepost = await post.create({
             author: req.user._id,
-            isRequot: false,
+            isRequote: false,
             isRepost: true,
             repostOf: postId,
         });
@@ -309,4 +321,70 @@ const createRepost = async (req, res) => {
     }
 };
 
-export { createPost, getPost, updatePost, deletePost, likePost, createRepost };
+const createRequote = async (req, res) => {
+    if (!req.params) {
+        return res.status(404).json({
+            success: false,
+            message: "Can you tell us which post do you want to repost?",
+        });
+    }
+    if (!req.body) {
+        return res.status(404).json({
+            success: false,
+            message: "Requote text is required in order to requote a post.",
+        });
+    }
+    const { requoteText } = req.body;
+    const { postId } = req.params;
+
+    if (!req.user) {
+        return res.status(404).json({
+            success: false,
+            message: "Login is required in order to repost a post.",
+        });
+    }
+
+    const givenPost = await post.findById(postId).select("isRepost");
+
+    if (givenPost.isRepost) {
+        return res.status(410).json({
+            success: false,
+            message:
+                "dumb hacker error. The post you are trying to reQuote is a repost. try requoting a post, not repost.",
+        });
+    }
+
+    const createdRequote = await post.create({
+        author: req.user._id,
+        isRepost: false,
+        isRequote: true,
+        requoteOf: postId,
+        requoteText: requoteText,
+    });
+    if (!createdRequote) {
+        return res.status(303).json({
+            success: false,
+            message: "while creating requote, an unexpected error occured .",
+        });
+    } else {
+        const updatedPost = await post.findByIdAndUpdate(
+            postId,
+            { $inc: { repostCount: 1 } },
+            { new: true }
+        );
+        return res.status(200).json({
+            success: true,
+            message: "Requote created successfully.",
+        });
+    }
+};
+
+export {
+    createPost,
+    getPost,
+    updatePost,
+    deletePost,
+    likePost,
+    createRepost,
+    createRequote,
+};

@@ -12,14 +12,14 @@ const postSchema = new Schema(
             type: String,
             max: 200,
             required: function () {
-                return !this.isRepost && !this.isRequot;
+                return !this.isRepost && !this.isRequote;
             },
         },
         content: {
             type: String,
             max: 5000,
             required: function () {
-                return !this.isRepost && !this.isRequot;
+                return !this.isRepost && !this.isRequote;
             },
         },
         description: {
@@ -73,18 +73,18 @@ const postSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "post",
         },
-        isRequot: {
+        isRequote: {
             type: Boolean,
             required: true,
         },
-        requotOf: {
+        requoteOf: {
             type: Schema.Types.ObjectId,
             ref: "post",
             required: function () {
                 return this.isRequot;
             },
         },
-        requotText: {
+        requoteText: {
             type: String,
             max: 500,
             required: function () {
