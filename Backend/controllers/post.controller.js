@@ -243,6 +243,70 @@ const likePost = async (req, res) => {
     }
 };
 
-const createRepost = async (req, res) => {};
+const createRepost = async (req, res) => {
+    if (!req.params) {
+        return res.status(404).json({
+            success: false,
+            message: "Can you tell us which post do you want to repost?",
+        });
+    }
+    const { postId } = req.params;
 
-export { createPost, getPost, updatePost, deletePost, likePost };
+    if (!req.user) {
+        return res.status(404).json({
+            success: false,
+            message: "Login is required in order to repost a post.",
+        });
+    }
+
+    const givenPost = await post.findById(postId).select("isRepost");
+
+    if (givenPost.isRepost) {
+        return res.status(410).json({
+            success: false,
+            message:
+                "dumb hacker error. The post you are trying to repost is already a repost. try reposting a post.",
+        });
+    }
+
+    const repostInstance = await post.findOneAndDelete({
+        author: req.user._id,
+        repostOf: postId,
+    });
+
+    if (!repostInstance) {
+        const createdRepost = await post.create({
+            author: req.user._id,
+            isRequot: false,
+            isRepost: true,
+            repostOf: postId,
+        });
+        if (!createdRepost) {
+            return res.status(303).json({
+                success: false,
+                message: "An unexpected error occured while creating repost.",
+            });
+        } else {
+            const updatedPost = await post.findByIdAndUpdate(
+                postId,
+                { $inc: { repostCount: 1 } },
+                { new: true }
+            );
+            return res.status(200).json({
+                success: true,
+                message: "Repost created successfully.",
+            });
+        }
+    } else {
+        const updatedPost = await post.findByIdAndUpdate(
+            postId,
+            { $inc: { repostCount: -1 } },
+            { new: true }
+        );
+        return res
+            .status(200)
+            .json({ success: true, message: "repost removed successfully." });
+    }
+};
+
+export { createPost, getPost, updatePost, deletePost, likePost, createRepost };

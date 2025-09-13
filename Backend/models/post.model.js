@@ -12,10 +12,16 @@ const postSchema = new Schema(
             type: String,
             max: 200,
             required: function () {
-                return !this.isRepost;
+                return !this.isRepost && !this.isRequot;
             },
         },
-
+        content: {
+            type: String,
+            max: 5000,
+            required: function () {
+                return !this.isRepost && !this.isRequot;
+            },
+        },
         description: {
             type: String,
             max: 5000,
@@ -28,13 +34,7 @@ const postSchema = new Schema(
             type: String,
             max: 200,
         },
-        content: {
-            type: String,
-            max: 5000,
-            required: function () {
-                return !this.isRepost;
-            },
-        },
+
         tags: {
             type: String,
             max: 500,
@@ -69,10 +69,29 @@ const postSchema = new Schema(
                 return this.isRepost;
             },
         },
-        parentRepost: {
+        parentPost: {
             type: Schema.Types.ObjectId,
             ref: "post",
         },
+        isRequot: {
+            type: Boolean,
+            required: true,
+        },
+        requotOf: {
+            type: Schema.Types.ObjectId,
+            ref: "post",
+            required: function () {
+                return this.isRequot;
+            },
+        },
+        requotText: {
+            type: String,
+            max: 500,
+            required: function () {
+                return this.isRequot;
+            },
+        },
+
         visibility: {
             type: String,
             enum: ["public", "private", "unlisted", "draft"],

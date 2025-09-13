@@ -55,6 +55,11 @@ const currentUser = async (req, res, next) => {
     }
 
     const accessToken = req.cookies.access_token;
+    if (!accessToken) {
+        return res
+            .status(401)
+            .send("Session not found! Please login to continue.");
+    }
     const decoded = jwt.verify(
         accessToken,
         process.env.ACCESS_TOKEN_SECRET_KEY
