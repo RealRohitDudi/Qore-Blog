@@ -12,6 +12,8 @@ const seariesSchema = new Schema(
                 ref: "blog",
             },
         ],
+        likeCount: { type: Number, default: 0 },
+        replyCount: { type: Number, default: 0 },
     },
     { timestamps: true }
 );

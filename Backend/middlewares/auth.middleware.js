@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import user from "../models/user.model.js";
 import post from "../models/post.model.js";
-import comment from "../models/comment.model.js";
+import reply from "../models/reply.model.js";
 
 const isLoggedIn = async (req, res, next) => {
     if (!req.cookies) {

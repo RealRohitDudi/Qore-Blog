@@ -1,7 +1,7 @@
 import post from "../models/post.model.js";
 import like from "../models/like.model.js";
 import repost from "../models/repost.model.js";
-import comment from "../models/comment.model.js";
+import reply from "../models/reply.model.js";
 import mongoose from "mongoose";
 
 const createPost = async (req, res) => {

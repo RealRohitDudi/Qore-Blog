@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
+
 import userRouter from "./routes/user.route.js";
 import postRouter from "./routes/post.route.js";
-import commentRouter from "./routes/comment.route.js";
-import bodyParser from "body-parser";
+import replyRouter from "./routes/reply.route.js";
 
 dotenv.config();
 const app = express();
@@ -31,7 +32,7 @@ app.listen(process.env.BACKEND_SERVER_PORT, async () => {
 
 app.use("/user", userRouter);
 app.use("/post", postRouter);
-app.use("/comment", commentRouter);
+app.use("/reply", replyRouter);
 
 app.get("/", (req, res) => {
     res.send("Qore is listening");

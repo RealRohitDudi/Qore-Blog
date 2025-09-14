@@ -6,7 +6,7 @@ const likeSchema = new Schema({
     targetId: { type: Schema.Types.ObjectId, required: true },
     targetType: {
         type: String,
-        enum: ["post", "comment", "repost", "series"],
+        enum: ["post", "reply", "series"],
         required: true,
     },
     createdAt: { type: Date, default: Date.now },

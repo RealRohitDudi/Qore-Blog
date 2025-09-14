@@ -46,6 +46,7 @@ const postSchema = new Schema(
         likeCount: { type: Number, default: 0 },
 
         commentCount: { type: Number, default: 0 },
+        replyCount: { type: Number, default: 0 },
 
         shares: {
             type: Number,
