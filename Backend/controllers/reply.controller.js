@@ -107,7 +107,44 @@ const createReply = async (req, res) => {
             success: false,
             message: "Reply created.",
             updation: updation,
+            replyId: createdReply._id,
         });
     }
 };
-export { createReply };
+
+const deleteReply = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message:
+                "Unauthenticated request. in order to delete replies please login. ",
+        });
+    }
+    const { replyId } = req.params;
+
+    if (!replyId) {
+        return res.status(300).json({
+            success: false,
+            message: "replyId is required in order to delete a reply.",
+        });
+    }
+    const deletedReply = await reply.findOneAndDelete({
+        _id: replyId,
+        user: req.user._id,
+    });
+    if (!deletedReply) {
+        return res.status(405).json({
+            success: false,
+            message: "The reply you're trying to delete might not exist.",
+        });
+    } else {
+        return res.status(200).json({
+            success: true,
+            message: "Reply deleted successfully",
+        });
+    }
+};
+
+const likeReply = async () => {};
+
+export { createReply, deleteReply };

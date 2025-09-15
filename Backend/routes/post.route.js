@@ -5,7 +5,6 @@ import {
     getPost,
     updatePost,
     deletePost,
-    likePost,
     createRepost,
     createRequote,
 } from "../controllers/post.controller.js";
@@ -20,7 +19,6 @@ router.post("/create", currentUser, createPost);
 router.get("/get-post/:postId", currentUser, getPost);
 router.patch("/update/:postId", isPostAuthorized, updatePost);
 router.delete("/delete/:postId", isPostAuthorized, deletePost);
-router.post("/like/:postId", currentUser, likePost);
 router.post("/repost/:postId", currentUser, createRepost);
 router.post("/requote/:postId", currentUser, createRequote);
 

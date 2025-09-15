@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import userRouter from "./routes/user.route.js";
 import postRouter from "./routes/post.route.js";
 import replyRouter from "./routes/reply.route.js";
+import likeRouter from "./routes/like.route.js";
 
 dotenv.config();
 const app = express();
@@ -29,10 +30,15 @@ app.listen(process.env.BACKEND_SERVER_PORT, async () => {
         console.error(`Error connecting with mongoDB: ${error}`);
     }
 });
+app.use((req, res, next) => {
+    console.log("Incoming request:", req.method, req.originalUrl);
+    next();
+});
 
-app.use("/user", userRouter);
-app.use("/post", postRouter);
-app.use("/reply", replyRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/post", postRouter);
+app.use("/api/v1/reply", replyRouter);
+app.use("/api/v1/like", likeRouter);
 
 app.get("/", (req, res) => {
     res.send("Qore is listening");

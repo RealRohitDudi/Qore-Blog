@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 const likeSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: "user", required: true },
-    targetId: { type: Schema.Types.ObjectId, required: true },
-    targetType: {
+    parentId: { type: Schema.Types.ObjectId, required: true },
+    parentType: {
         type: String,
         enum: ["post", "reply", "series"],
         required: true,
