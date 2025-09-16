@@ -79,7 +79,7 @@ const signupMethod = async (req, res) => {
         });
     }
 
-    userInstance = await user.create({
+    const userInstance = await user.create({
         email,
         username,
         password,
@@ -89,7 +89,9 @@ const signupMethod = async (req, res) => {
 
     if (userInstance) {
         return res.status(200).send({
+            success: true,
             message: "User created successfully. pleaase login to continue.",
+            userId: userInstance._id,
         });
     }
 };

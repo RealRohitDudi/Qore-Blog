@@ -124,6 +124,8 @@ const setLike = async (req, res) => {
             } else {
                 updation = "likeCount updated on reply.";
             }
+            console.log("updatedReply:", updatedReply);
+
             totalLikeCount = updatedReply.likeCount;
         } else if (parentType == "series") {
             const updatedSeries = await series
@@ -166,7 +168,7 @@ const setLike = async (req, res) => {
             await incLikeCount();
             return res.status(200).json({
                 success: true,
-                message: "Post liked successfully.",
+                message: `${parentType} liked successfully.`,
                 updation: updation,
                 totalLikes: totalLikeCount,
             });
@@ -177,8 +179,9 @@ const setLike = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "post unliked successfully.",
-            totalPostLikes: totalLikeCount,
+            message: `${parentType} unliked successfully.`,
+            updation: updation,
+            totalLikes: totalLikeCount,
         });
     }
 };

@@ -9,6 +9,7 @@ import userRouter from "./routes/user.route.js";
 import postRouter from "./routes/post.route.js";
 import replyRouter from "./routes/reply.route.js";
 import likeRouter from "./routes/like.route.js";
+import followRouter from "./routes/follow.route.js";
 
 dotenv.config();
 const app = express();
@@ -39,6 +40,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/post", postRouter);
 app.use("/api/v1/reply", replyRouter);
 app.use("/api/v1/like", likeRouter);
+app.use("/api/v1/follow", followRouter);
 
 app.get("/", (req, res) => {
     res.send("Qore is listening");

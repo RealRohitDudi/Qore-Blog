@@ -3,10 +3,15 @@ const { Schema } = mongoose;
 
 const likeSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: "user", required: true },
-    parentId: { type: Schema.Types.ObjectId, required: true },
+
     parentType: {
         type: String,
         enum: ["post", "reply", "series"],
+        required: true,
+    },
+    parentId: {
+        type: Schema.Types.ObjectId,
+        refPath: "parentType", // dynamic reference
         required: true,
     },
     createdAt: { type: Date, default: Date.now },

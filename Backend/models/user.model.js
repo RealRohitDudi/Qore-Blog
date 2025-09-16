@@ -16,6 +16,14 @@ const userSchema = new Schema(
             unique: true,
             max: 50,
         },
+        followerCount: {
+            type: Number,
+            default: 0,
+        },
+        followingCount: {
+            type: Number,
+            default: 0,
+        },
         email: {
             type: String,
             required: true,
