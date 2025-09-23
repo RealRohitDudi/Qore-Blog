@@ -18,15 +18,15 @@ const setFollow = async (req, res) => {
     let totalFollowerCount = null;
     let totalFollowingCount = null;
     let updation = null;
-    const { accountId } = req.params;
-    if (!accountId) {
+    const { username } = req.params;
+    if (!username) {
         return res.status(400).json({
             success: false,
-            message: "Missing required parameter: accountId",
+            message: "Missing required parameter: username",
         });
     }
 
-    const incFollowCount = async () => {
+    const incFollowCount = async (accountId) => {
         try {
             const updatedFollowerCount = await user
                 .findByIdAndUpdate(
@@ -54,7 +54,7 @@ const setFollow = async (req, res) => {
             });
         }
     };
-    const decFollowCount = async () => {
+    const decFollowCount = async (accountId) => {
         try {
             const updatedFollowerCount = await user
                 .findByIdAndUpdate(
@@ -83,8 +83,11 @@ const setFollow = async (req, res) => {
         }
     };
 
-    const accountInstance = await user.findById(accountId).select("username");
+    const accountInstance = await user
+        .findOne({ username: username })
+        .select("username");
 
+    const accountId = accountInstance._id;
     const followInstance = await follow.findOneAndDelete({
         account: accountId,
         follower: req.user._id,
@@ -101,7 +104,7 @@ const setFollow = async (req, res) => {
                 message: "Error occured while creating follow.",
             });
         } else {
-            await incFollowCount();
+            await incFollowCount(accountId);
             return res.status(200).json({
                 success: false,
                 message: `You followed ${accountInstance.username}.`,
@@ -110,7 +113,7 @@ const setFollow = async (req, res) => {
             });
         }
     } else {
-        await decFollowCount();
+        await decFollowCount(accountId);
         return res.status(200).json({
             success: false,
             message: `You unfollowed ${accountInstance.username}.`,

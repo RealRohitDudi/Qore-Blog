@@ -5,11 +5,12 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
-import userRouter from "./routes/user.route.js";
-import postRouter from "./routes/post.route.js";
-import replyRouter from "./routes/reply.route.js";
-import likeRouter from "./routes/like.route.js";
-import followRouter from "./routes/follow.route.js";
+import userRouter from "./src/routes/user.route.js";
+import postRouter from "./src/routes/post.route.js";
+import replyRouter from "./src/routes/reply.route.js";
+import likeRouter from "./src/routes/like.route.js";
+import followRouter from "./src/routes/follow.route.js";
+import fetchRouter from "./src/routes/fetch.route.js";
 
 dotenv.config();
 const app = express();
@@ -41,6 +42,7 @@ app.use("/api/v1/post", postRouter);
 app.use("/api/v1/reply", replyRouter);
 app.use("/api/v1/like", likeRouter);
 app.use("/api/v1/follow", followRouter);
+app.use("/api/v1/fetch", fetchRouter);
 
 app.get("/", (req, res) => {
     res.send("Qore is listening");
