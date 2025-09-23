@@ -66,7 +66,14 @@ const getUser = async (req, res) => {
     }
 };
 
-const getHomePosts = async (req, res) => {};
+const getHomePosts = async (req, res) => {
+    if (!req.user) {
+        return res.status(403).json({
+            success: false,
+            message: "Please login to continue.",
+        });
+    }
+};
 const getUserPosts = async (req, res) => {};
 const getSeriesPosts = async (req, res) => {};
 const getComments = async (req, res) => {};
