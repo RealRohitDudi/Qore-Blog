@@ -19,7 +19,11 @@ const getUser = async (req, res) => {
                 "'username' parameter is required in order to fetch a user.",
         });
     }
-    const accountInstance = await user.findOne({ username: username });
+    const accountInstance = await user
+        .findOne({ username: username })
+        .select(
+            "-password -visibility -isDeleted -recentsActivities -hobbies -interests -refreshToken"
+        );
     if (!accountInstance) {
         return res.status(403).json({
             success: false,
@@ -74,8 +78,76 @@ const getHomePosts = async (req, res) => {
         });
     }
 };
-const getUserPosts = async (req, res) => {};
+const getProfilePosts = async (req, res) => {
+    if (!req.user) {
+        return res.status(403).json({
+            success: false,
+            message: "Login is required in order to get profile posts.",
+        });
+    }
+    const { username } = req.params;
+    if (!username) {
+        return res.status(422).json({
+            success: false,
+            message:
+                "'username' param is required in order to get profile posts.",
+        });
+    }
+    console.log("req.body", req.body);
+
+    const page = req.body;
+    const limit = req.body || 10;
+    const skip = (page - 1) * limit;
+
+    if (!page) {
+        return res.status(422).json({
+            success: false,
+            message: "'page' param is required in order to get profile posts.",
+        });
+    }
+
+    const userInstance = user
+        .findOne({ username: username })
+        .select("username");
+    if (!userInstance) {
+        return res.status(303).json({
+            success: false,
+            message: "the user you requested to get posts of, not found.",
+        });
+    }
+
+    try {
+        const userPosts = post
+            .find({ author: userInstance._id })
+            .page(page)
+            .limit(limit)
+            .skip(limit);
+
+        if (!userPosts) {
+            return res.status(503).json({
+                success: false,
+                message: "UserPosts not found.",
+                error: error,
+            });
+        }
+        return res.status(202).json({
+            success: true,
+            message: "got some profile posts",
+            page: page,
+            limit: limit,
+            skip: skip,
+            posts: userPosts,
+        });
+    } catch (error) {
+        return res.status(503).json({
+            success: false,
+            message: "Error occured while finding user posts.",
+            error: error,
+        });
+    }
+};
+
 const getSeriesPosts = async (req, res) => {};
 const getComments = async (req, res) => {};
 
-export { getUser, getComments, getHomePosts, getSeriesPosts, getUserPosts };
+export { getUser, getComments, getHomePosts, getSeriesPosts, getProfilePosts };

@@ -5,6 +5,8 @@ import reply from "../models/reply.model.js";
 import mongoose from "mongoose";
 
 const createPost = async (req, res) => {
+    console.log("Create post controller invoked");
+
     if (!req.user) {
         return res.status(300).json({
             success: false,
@@ -52,6 +54,7 @@ const createPost = async (req, res) => {
         series: series ? series : null,
         altText: altText ? altText : null,
         isRepost: false,
+        isRequote: false,
     });
 
     if (!postInstance) {

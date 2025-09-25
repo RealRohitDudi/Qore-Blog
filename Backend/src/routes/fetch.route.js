@@ -6,11 +6,14 @@ import {
     getComments,
     getHomePosts,
     getSeriesPosts,
-    getUserPosts,
+    getProfilePosts,
 } from "../controllers/fetch.controller.js";
 
 const router = Router();
 
 router.get("/user/:username", currentUser, getUser);
+router.post("/profile/posts/:username", currentUser, getProfilePosts);
+router.get("/series/posts/:seriesId", currentUser, getSeriesPosts);
+router.get("/comments/:postId", currentUser, getComments);
 
 export default router;
